@@ -31,11 +31,8 @@ class LoginView(APIView):
         """[POST] Sign in to an account.
         Login after register.
         """
-        serializer_login = LoginSerializer(
-            data=request.data, context={"request": request}
-        )
+        serializer_login = self.serializer_class(data=request.data)
         serializer_login.is_valid(raise_exception=True)
-        validated_data = serializer_login.validate_login(serializer_login.data)
         response = Response(
             status=status.HTTP_201_CREATED,
         )
@@ -43,7 +40,7 @@ class LoginView(APIView):
         # Set cookie
         response.set_cookie(
             key=base.SIMPLE_JWT["AUTH_COOKIE"],
-            value=validated_data.get("access"),
+            value=serializer_login.validated_data.get("access"),
             expires=base.SIMPLE_JWT["ACCESS_TOKEN_LIFETIME"],
             secure=base.SIMPLE_JWT["AUTH_COOKIE_SECURE"],
             httponly=base.SIMPLE_JWT["AUTH_COOKIE_HTTP_ONLY"],
@@ -51,8 +48,11 @@ class LoginView(APIView):
         )
 
         csrf.get_token(request)  # Set CSRF token in the response
-        response.data = {"success": "Login successfully", **validated_data}
-        cache.set("refresh_token", validated_data.get("refresh"))
+        response.data = {
+            "success": "Login successfully",
+            **serializer_login.validated_data,
+        }
+        cache.set("refresh", serializer_login.validated_data.get("refresh"))
 
         # Set the Vary header since content varies with the sessiontoken cookie.
         patch_vary_headers(response, ("Cookie",))
