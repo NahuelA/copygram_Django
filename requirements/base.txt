@@ -1,0 +1,33 @@
+# Base
+pytz==2022.1
+python-slugify==6.1.0
+Pillow==9.2.0
+psycopg2==2.9.3 --no-binary psycopg2
+
+# Django
+django==4.0.2
+
+# Cors for use react
+django-cors-headers==3.12.0
+
+# DjangoRESTFramework
+djangorestframework==3.13.0
+
+# Environment
+django-environ==0.8.1
+
+# Json Web Token
+PyJWT>=2.4.0
+djangorestframework-simplejwt
+
+# Passwords security
+argon2-cffi==21.2.0
+
+# Static files
+whitenoise==6.1.0
+
+# Celery
+redis>=3.0.0,<=4.0.0
+django-redis==5.1.0
+celery==5.2.7
+flower==1.0.0

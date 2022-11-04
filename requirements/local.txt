@@ -1,0 +1,14 @@
+-r ./base.txt
+
+# Debugging
+ipdb==0.13.7
+
+# Testing
+mypy==0.971
+pytest==7.1.0
+pytest-sugar==0.9.4
+pytest-django==4.5.1
+factory-boy==3.2.0
+
+# Code quality
+flake8==4.0.0
