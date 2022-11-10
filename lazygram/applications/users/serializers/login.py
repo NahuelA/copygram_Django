@@ -66,34 +66,3 @@ class LoginSerializer(TokenObtainSerializer):
             "user": attrs.get("username"),
         }
         return response
-
-
-class TokenRefreshSerializer(serializers.Serializer):
-    """Refresh token serializer."""
-
-    refresh = serializers.CharField()
-    access = serializers.CharField(read_only=True)
-    token_class = RefreshToken
-
-    def validate(self, attrs):
-        refresh = self.token_class(attrs["refresh"])
-
-        data = {"access": str(refresh.access_token)}
-
-        if SIMPLE_JWT.get("ROTATE_REFRESH_TOKENS"):
-            if SIMPLE_JWT.get("BLACKLIST_AFTER_ROTATION"):
-                try:
-                    # Attempt to blacklist the given refresh token
-                    refresh.blacklist()
-                except AttributeError:
-                    # If blacklist app not installed, `blacklist` method will
-                    # not be present
-                    pass
-
-            refresh.set_jti()
-            refresh.set_exp()
-            refresh.set_iat()
-
-            data["refresh"] = str(refresh)
-
-        return data
