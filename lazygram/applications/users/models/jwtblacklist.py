@@ -4,28 +4,42 @@
 from django.db import models
 from django.contrib.auth.models import User
 
-# Rest-framework
-from rest_framework.permissions import BasePermission
+# Settings
+from django.conf import settings
 
 
-class BlackListedToken(models.Model):
-    token = models.CharField(max_length=500)
-    user = models.ForeignKey(User, related_name="token_user", on_delete=models.CASCADE)
-    timestamp = models.DateTimeField(auto_now=True)
+class OutstandingToken(models.Model):
+    id = models.BigAutoField(primary_key=True, serialize=False)
+    user = models.ForeignKey(
+        settings.AUTH_USER_MODEL, on_delete=models.SET_NULL, null=True, blank=True
+    )
+
+    jti = models.CharField(unique=True, max_length=255)
+    token = models.TextField()
+
+    created_at = models.DateTimeField(null=True, blank=True)
+    expires_at = models.DateTimeField()
 
     class Meta:
-        unique_together = ("token", "user")
+        ordering = ("user",)
+
+    def __str__(self):
+        return "Token for {} ({})".format(
+            self.user,
+            self.jti,
+        )
 
 
-class IsTokenValid(BasePermission):
-    def has_permission(self, request, view):
-        user_id = request.user.id
-        is_allowed_user = True
-        token = request.auth.decode("utf-8")
-        try:
-            is_blackListed = BlackListedToken.objects.get(user=user_id, token=token)
-            if is_blackListed:
-                is_allowed_user = False
-        except BlackListedToken.DoesNotExist:
-            is_allowed_user = True
-        return is_allowed_user
+class BlacklistedToken(models.Model):
+    id = models.BigAutoField(primary_key=True, serialize=False)
+    token = models.OneToOneField(OutstandingToken, on_delete=models.CASCADE)
+
+    blacklisted_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        abstract = (
+            "rest_framework_simplejwt.token_blacklist" not in settings.INSTALLED_APPS
+        )
+
+    def __str__(self):
+        return f"Blacklisted token for {self.token.user}"
