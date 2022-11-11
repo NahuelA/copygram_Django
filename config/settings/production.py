@@ -12,6 +12,14 @@ DATABASES["default"] = env.db("DATABASE_URL")  # NOQA
 DATABASES["default"]["ATOMIC_REQUESTS"] = True  # NOQA
 DATABASES["default"]["CONN_MAX_AGE"] = env.int("CONN_MAX_AGE", default=60)  # NOQA
 
+# SIMPLE-JWT
+SIMPLE_JWT[
+    "AUTH_COOKIE_DOMAIN"
+] = "lazygram.com"  # A string like "example.com", or None for standard domain cookie.
+SIMPLE_JWT[
+    "AUTH_COOKIE_SECURE"
+] = True  # Whether the auth cookies should be secure (https:// only).
+
 # Cache
 CACHES = {
     "default": {
