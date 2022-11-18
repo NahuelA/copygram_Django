@@ -97,7 +97,6 @@ class ProfilesSearchView(ListAPIView):
 
     def list(self, request, *args, **kwargs):
 
-        print(kwargs.get("search_profiles"))
         if kwargs.get("search_profiles") != None:
             queryset = self.filter_queryset(
                 self.queryset.filter(
