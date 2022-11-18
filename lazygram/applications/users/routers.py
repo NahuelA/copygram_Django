@@ -2,13 +2,16 @@
 
 from django.urls import path, include
 
+# Token blacklist
+from rest_framework_simplejwt.views import TokenBlacklistView
+
 # User views
 from lazygram.applications.users.api_views import (
-    LoginView,
     UserView,
     LogoutView,
-    VerifyView,
-    TokenView,
+    TokenRefreshView,
+    TokenObtainPairView,
+    TokenValidationRegister,
     ProfileView,
     ProfilesSearchView,
     FollowingView,
@@ -18,38 +21,53 @@ from lazygram.applications.users.api_views import (
 from rest_framework import routers
 
 router = routers.DefaultRouter()
-router.register(prefix=r"profiles", viewset=ProfileView, basename="profiles-router")
+router.register(prefix=r"profiles", viewset=ProfileView, basename="profiles")
 
 router.register(prefix=r"users", viewset=UserView, basename="users")
 
 router.register(prefix=r"followers", viewset=FollowersView, basename="followers")
 
-router.register(prefix=r"followings", viewset=FollowingView, basename="following")
+router.register(prefix=r"followings", viewset=FollowingView, basename="followings")
 
 
 # Crud
 urlpatterns = [
+    # Add all routers
     path("", include(router.urls)),
 ]
 
 # Utils
 urlpatterns += [
-    # Login
+    # Logout
+    path(
+        route="logout/",
+        view=LogoutView.as_view(),
+        name="logout",
+    ),
+    # Refresh token
+    path(
+        route="refresh-token/",
+        view=TokenRefreshView.as_view(),
+        name="refresh-token",
+    ),
+    # Obtain tokens
     path(
         route="login/",
-        view=LoginView.as_view(),
-        name="login",
+        view=TokenObtainPairView.as_view(),
+        name="token",
     ),
-    # Logout
-    # path(
-    #     route="logout/",
-    #     view=LogoutView.as_view(),
-    #     name="logout",
-    # ),
-    # Verify account
-    path(route="verify-account/", view=VerifyView.as_view(), name="verify_account"),
-    # Verify token
-    path(route="verify-token/", view=TokenView.as_view(), name="verify_token"),
+    # Validation register token
+    path(
+        route="validation-register-token/",
+        view=TokenValidationRegister.as_view(),
+        name="token",
+    ),
+    # Token blacklist
+    path(
+        route="blacklist/",
+        view=TokenBlacklistView.as_view(),
+        name="token_blacklist",
+    ),
     # Isfollowed
     path(
         route="isfollowed/<str:profile>",
@@ -58,12 +76,7 @@ urlpatterns += [
     ),
     # Search profile
     path(
-        route="profile/<str:search_profiles>",
-        view=ProfilesSearchView.as_view(),
-        name="search_profile",
-    ),
-    path(
-        route="profile/",
+        route="profiles/<str:search_profiles>",
         view=ProfilesSearchView.as_view(),
         name="search_profile",
     ),
