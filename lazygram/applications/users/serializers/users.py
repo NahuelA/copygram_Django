@@ -4,7 +4,6 @@
 from .__modules__ import *
 from rest_framework.validators import UniqueValidator
 from rest_framework_simplejwt.tokens import RefreshToken
-from django.core.cache import cache
 
 # Django
 from django.template.loader import render_to_string
