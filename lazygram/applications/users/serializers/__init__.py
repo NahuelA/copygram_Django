@@ -1,6 +1,6 @@
-from .login import LoginSerializer
 from .profile import ProfileSerializer
+from .verify import TokenValidationSerializer
+from .token import TokenObtainPairSerializer, TokenRefreshSerializer
 from .users import UserSerializer
-from .verify import VerifyUserSerializer, TokenValidationSerializer
 from .followers import FollowersSerializer
 from .following import FollowingSerializer
