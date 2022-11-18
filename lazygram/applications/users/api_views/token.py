@@ -8,6 +8,9 @@ from rest_framework.views import APIView
 # Utils
 from django.utils.module_loading import import_string
 
+# Model
+from django.contrib.auth.models import User
+
 # Rest-framework-simplejwt
 from config.settings.base import SIMPLE_JWT
 from rest_framework_simplejwt.authentication import AUTH_HEADER_TYPES
@@ -99,10 +102,17 @@ class TokenValidationRegister(APIView):
     """Verify if your token is registered, then active account."""
 
     serializer_class = TokenValidationSerializer
+    model = User
 
     def post(self, request):
+        user = ""
 
-        serializer = self.serializer_class(data=request.data)
+        try:
+            user = User.objects.get(username=request.data.get("username"))
+        except self.model.DoesNotExist:
+            return Response("Does not exist user, please, send your username")
+
+        serializer = self.serializer_class(data=request.data, context={"user": user})
         serializer.is_valid(raise_exception=True)
 
         return Response(serializer.validated_data, status=status.HTTP_201_CREATED)
