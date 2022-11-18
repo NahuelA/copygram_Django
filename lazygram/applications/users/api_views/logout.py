@@ -3,34 +3,19 @@
 # Django
 from .__modules__ import *
 
-# CSRF
-from django.middleware import csrf
 
-# Cache
-from django.core.cache import cache
+class LogoutView(APIView):
+    """Delete access, sessionid and csrf cookies"""
 
-# JWT
-from rest_framework_simplejwt.authentication import JWTAuthentication
-
-
-class LogoutView(JWTAuthentication):
-    """Logout from account."""
-
+    permission_classes = (IsAuthenticated,)
     http_method_names = ["get", "post", "head", "options"]
 
     def post(self, request):
-        """[POST] Sign in to an account.
-        Login after register.
-        """
-        print("My cookies", request.COOKIES)
-        print("My refresh token in cache", cache.get("refresh_token"))
+        response = Response(status=status.HTTP_204_NO_CONTENT)
 
-        user, token = self.authenticate(request)
-        if token is not None:
-            csrf.get_token(request)
+        if request.COOKIES.get("access_token") != None:
+            response.delete_cookie("access_token", "/")
+            response.delete_cookie("csrftoken", "/")
+            response.delete_cookie("sessionid", "/")
 
-            if cache.get("refresh_token") != None:
-                cache.delete("refresh_token")
-                request.COOKIES.pop("refresh_token")
-
-        return Response(status=status.HTTP_204_NO_CONTENT)
+        return response
