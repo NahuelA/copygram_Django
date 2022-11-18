@@ -3,22 +3,14 @@
 # Rest-framework
 from .__modules__ import *
 from rest_framework.validators import UniqueValidator
+from rest_framework_simplejwt.tokens import RefreshToken
+from django.core.cache import cache
 
 # Django
 from django.template.loader import render_to_string
 from django.core.validators import EmailValidator
-from django.core.mail import EmailMultiAlternatives, send_mail
+from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User
-
-# Local settings
-from django.conf import settings
-
-# Utilities
-from datetime import timedelta
-from django.utils import timezone
-
-# JWT
-import jwt
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -112,12 +104,7 @@ class UserSerializer(serializers.ModelSerializer):
     def verification_token(self, user):
         """Verify account with JWT."""
 
-        exp_date = timezone.now() + timedelta(hours=1)
-        payload = {
-            "user": user.username,
-            "exp": int(exp_date.timestamp()),
-            "type": "email_confirmation",
-        }
+        refresh = RefreshToken.for_user(user)
+        tokens = {"refresh": str(refresh), "username": user.username}
 
-        token = jwt.encode(payload, settings.SECRET_KEY, algorithm="HS256")
-        return token
+        return tokens
