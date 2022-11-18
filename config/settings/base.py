@@ -137,6 +137,9 @@ SIMPLE_JWT = {
     "AUTH_COOKIE_HTTP_ONLY": True,  # Http only cookie flag.It's not fetch by javascript.
     "AUTH_COOKIE_PATH": "/",  # The path of the auth cookie.
     "AUTH_COOKIE_SAMESITE": "Lax",  # Whether to set the flag restricting cookie leaks on cross-site requests. This can be 'Lax', 'Strict', or None to disable the flag.
+    # Serializers
+    "TOKEN_REFRESH_SERIALIZER": "lazygram.applications.users.serializers.TokenRefreshSerializer",
+    "TOKEN_OBTAIN_SERIALIZER": "lazygram.applications.users.serializers.TokenObtainPairSerializer",
 }
 
 # Static files
