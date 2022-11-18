@@ -1,6 +1,5 @@
-from .login import LoginView
 from .logout import LogoutView
 from .profile import ProfileView, ProfilesSearchView
 from .users import UserView
-from .verify import VerifyView, TokenView
+from .token import TokenRefreshView, TokenObtainPairView, TokenValidationRegister
 from .follow import FollowersView, FollowingView, IsFollowedView
