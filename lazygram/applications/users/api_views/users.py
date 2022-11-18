@@ -40,9 +40,7 @@ class UserView(ModelViewSet):
         # Trim
         trimed_user = str(serializer.validated_data["username"]).replace(" ", "")
         lower_trimed_user = trimed_user.lower()
-        print(lower_trimed_user)
         serializer.save(is_active=False, username=lower_trimed_user)
-        print(trimed_user)
 
         new_user = User.objects.filter(username=serializer.data["username"]).first()
 
