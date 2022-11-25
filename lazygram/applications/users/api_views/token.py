@@ -24,12 +24,6 @@ from lazygram.applications.users.serializers import (
 # CSRF
 from django.middleware import csrf
 
-# Cookies
-from lazygram.applications.users.utils import jwt_cookie
-
-# Utils
-from django.utils.cache import patch_vary_headers
-
 
 class TokenViewBase(generics.GenericAPIView):
     permission_classes = ()
@@ -67,12 +61,9 @@ class TokenViewBase(generics.GenericAPIView):
             serializer.is_valid(raise_exception=True)
 
             # Set jwt cookie in the browser
-            jwt_cookie(serializer.validated_data.get("access"), response)
             response.data = serializer.validated_data
 
             csrf.get_token(request)  # Set CSRF token in the response
-            # Set the Vary header since content varies with the sessiontoken cookie.
-            patch_vary_headers(response, ("Cookie",))
 
         except TokenError as e:
             raise InvalidToken(e.args[0])
