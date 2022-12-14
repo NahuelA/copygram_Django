@@ -45,7 +45,7 @@ class ProfileView(ModelViewSet):
     def perform_update(self, serializer):
         serializer.save()
 
-    def list(self, request, *args, **kwargs):
+    def list(self):
         """List all posts the user follows."""
 
         if cache.get("profiles") == None:
@@ -61,7 +61,7 @@ class ProfileView(ModelViewSet):
         serializer = self.get_serializer(cache.get("profiles"), many=True)
         return Response(serializer.data)
 
-    def update(self, request, *args, **kwargs):
+    def update(self, request, **kwargs):
         """Update profile from user
 
         Some fields is updates automatically:
@@ -87,15 +87,13 @@ class ProfileView(ModelViewSet):
 
 
 class ProfilesSearchView(ListAPIView):
-    """Search profiles."""
+    """Find profiles to starts with any registered username."""
 
-    model = Profile
     queryset = Profile.manager_object.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
-    update_status = status.HTTP_200_OK
 
-    def list(self, request, *args, **kwargs):
+    def list(self, **kwargs):
 
         if kwargs.get("search_profiles") != None:
             queryset = self.filter_queryset(
@@ -110,8 +108,6 @@ class ProfilesSearchView(ListAPIView):
                 return self.get_paginated_response(serializer.data)
 
             serializer = self.get_serializer(queryset, many=True)
-            return Response(serializer.data, status=self.update_status)
+            return Response(serializer.data, status=status.HTTP_200_OK)
         else:
-            if cache.get("recent") is not None:  # Get visited profiles
-                return Response(cache.get("recent"), status=self.update_status)
-            return Response("Does not results.", status=self.update_status)
+            return Response(status=status.HTTP_404_NOT_FOUND)
