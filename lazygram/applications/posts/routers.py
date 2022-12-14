@@ -5,6 +5,7 @@ from django.urls import path, include
 # Posts views
 from lazygram.applications.posts.api_views import (
     PostsView,
+    ProfilePost,
     PostSavesView,
     CommentsPostView,
 )
@@ -25,4 +26,5 @@ urlpatterns = [
         route="",
         view=include(router.urls),
     ),
+    path(route="profile-posts/<str:profile>", view=ProfilePost.as_view()),
 ]
