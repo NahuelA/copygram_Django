@@ -1,3 +1,3 @@
 from .posts import PostsSerializer
-from .posts_saves import PostsSavesSerializer
+from .saved_posts import SavedPostsSerializer
 from .comments import CommentsSerializer
