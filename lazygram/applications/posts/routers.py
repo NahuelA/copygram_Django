@@ -6,7 +6,7 @@ from django.urls import path, include
 from lazygram.applications.posts.api_views import (
     PostsView,
     ProfilePost,
-    PostSavesView,
+    SavedPostsView,
     CommentsPostView,
 )
 
@@ -19,7 +19,7 @@ router.register(prefix=r"posts", viewset=PostsView, basename="posts-list")
 
 router.register(prefix=r"comments", viewset=CommentsPostView, basename="comments")
 
-router.register(prefix=r"posts_saves", viewset=PostSavesView, basename="posts_saves")
+router.register(prefix=r"saved_posts", viewset=SavedPostsView, basename="saved_posts")
 
 urlpatterns = [
     path(
