@@ -14,13 +14,11 @@ from lazygram.applications.users.serializers import ProfileSerializer
 class ProfileView(ModelViewSet):
     """Profile view."""
 
-    model = Profile
     queryset = Profile.manager_object.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
     http_method_names = ["get", "put", "patch", "delete", "head", "options", "trace"]
     lookup_field = "user__username"
-    update_status = status.HTTP_201_CREATED
 
     def get_object(self):
         """
@@ -45,7 +43,7 @@ class ProfileView(ModelViewSet):
     def perform_update(self, serializer):
         serializer.save()
 
-    def list(self):
+    def list(self, request):
         """List all posts the user follows."""
 
         if cache.get("profiles") == None:
@@ -61,7 +59,7 @@ class ProfileView(ModelViewSet):
         serializer = self.get_serializer(cache.get("profiles"), many=True)
         return Response(serializer.data)
 
-    def update(self, request, **kwargs):
+    def update(self, request, *args, **kwargs):
         """Update profile from user
 
         Some fields is updates automatically:
@@ -71,19 +69,16 @@ class ProfileView(ModelViewSet):
         """
         instance = self.get_object()
         partial = kwargs.pop("partial", False)
-
         serializer = self.get_serializer(instance, data=request.data, partial=partial)
         serializer.is_valid(raise_exception=True)
         self.perform_update(serializer)
-
-        self.update_status = status.HTTP_201_CREATED
 
         if getattr(instance, "_prefetched_objects_cache", None):
             # If 'prefetch_related' has been applied to a queryset, we need to
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
 
-        return Response(serializer.data, status=self.update_status)
+        return Response(serializer.data, status=status.HTTP_201_CREATED)
 
 
 class ProfilesSearchView(ListAPIView):
@@ -93,7 +88,7 @@ class ProfilesSearchView(ListAPIView):
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
 
-    def list(self, **kwargs):
+    def list(self, request, *args, **kwargs):
 
         if kwargs.get("search_profiles") != None:
             queryset = self.filter_queryset(
