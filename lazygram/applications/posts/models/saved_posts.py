@@ -21,13 +21,10 @@ class SavedPosts(models.Model):
 
     saved_post = models.ManyToManyField(
         to=Posts,
+        null=True,
         verbose_name="Saved post",
         related_name="saved_posts",
     )
-
-    def __str__(self):
-        """Return the id of the post in string format."""
-        return self.post
 
     # Validations
     def validate_post_exist(self, postid):

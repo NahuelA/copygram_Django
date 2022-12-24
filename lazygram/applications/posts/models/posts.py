@@ -5,8 +5,6 @@ from lazygram.applications.users.models import Profile
 
 # Create your models here.
 
-# Posts for the user
-
 
 class Posts(models.Model):
     """Model Posts.
