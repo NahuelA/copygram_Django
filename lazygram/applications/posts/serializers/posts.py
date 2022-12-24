@@ -51,7 +51,6 @@ class PostsSerializer(serializers.ModelSerializer):
         validated_data = {**self.validated_data, **kwargs}
 
         if self.instance is not None:
-            print(validated_data)
             profile_likedit = validated_data["profile_likedit"]
             if profile_likedit is not None:
 
@@ -61,12 +60,10 @@ class PostsSerializer(serializers.ModelSerializer):
                 for i in profile_likedit_all.all():
                     if i == profile_likedit[0]:
                         likedit = i
-                        print("It's equal", i, profile_likedit[0])
                         break
                 del validated_data["profile_likedit"]
 
                 if likedit != None and self.instance.likes > 0:
-                    print(likedit)
                     # Remove like and profile that liked it
                     self.instance.profile_likedit.remove(profile_likedit[0].id)
                     self.instance.likes -= 1
