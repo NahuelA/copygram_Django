@@ -1,5 +1,12 @@
 from .logout import LogoutView
-from .profile import ProfileView, ProfilesSearchView
+from lazygram.applications.users.api_views.profile import (
+    ProfileView,
+    ProfilesSearchView,
+)
 from .users import UserView
-from .token import TokenRefreshView, TokenObtainPairView, TokenValidationRegister
+from lazygram.applications.users.api_views.token import (
+    TokenRefreshView,
+    TokenObtainPairView,
+    TokenValidationRegister,
+)
 from .follow import FollowersView, FollowingView, IsFollowedView
