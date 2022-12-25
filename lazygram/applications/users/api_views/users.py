@@ -6,12 +6,13 @@ from .__modules__ import *
 # Rest-framework
 from lazygram.applications.users.serializers.users import UserSerializer
 
-# Local serializers
+# Models
 from lazygram.applications.users.models import (
     Profile,
     FollowersModel,
     FollowingModel,
 )
+from lazygram.applications.posts.models import SavedPosts
 
 
 class UserView(ModelViewSet):
@@ -49,6 +50,8 @@ class UserView(ModelViewSet):
         # Create a new follows instance.
         FollowersModel.objects.create(profile=new_profile)
         FollowingModel.objects.create(profile=new_profile)
+        # Create a new saved_post instance
+        SavedPosts.objects.create(profile=new_profile)
 
     def perform_update(self, serializer):
         """Update an instance of the user."""
