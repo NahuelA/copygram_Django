@@ -101,7 +101,10 @@ class TokenValidationRegister(APIView):
         try:
             user = User.objects.get(username=request.data.get("username"))
         except self.model.DoesNotExist:
-            return Response("Does not exist user, please, send your username")
+            return Response(
+                "Does not exist user, please, send your username",
+                status=status.HTTP_404_NOT_FOUND,
+            )
 
         serializer = self.serializer_class(data=request.data, context={"user": user})
         serializer.is_valid(raise_exception=True)
