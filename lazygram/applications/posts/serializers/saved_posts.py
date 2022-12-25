@@ -51,16 +51,11 @@ class SavedPostsSerializer(serializers.ModelSerializer):
             # If a post is in saved_post array, remove it. Else add it
             post = self.context.get("post_to_save")
             saved_post = self.instance.saved_post
-            save = True
 
-            for i in saved_post.all():
-                if i == post:
-                    self.instance.saved_post.remove(post)
-                    self.instance.save()
-                    save = False
-                    break
-
-            if save:
+            if post in saved_post.all():
+                self.instance.saved_post.remove(post)
+                self.instance.save()
+            else:
                 self.instance.saved_post.add(post)
                 self.instance.save()
 
