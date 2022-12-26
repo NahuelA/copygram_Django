@@ -47,7 +47,6 @@ class PostsView(ModelViewSet):
         serializer.is_valid(raise_exception=True)
 
         # Getting profile
-        print(request.user)
         profile = Profile.manager_object.get(user__username=request.user)
         self.perform_create(serializer, profile=profile)
 
@@ -76,6 +75,15 @@ class PostsView(ModelViewSet):
             # forcibly invalidate the prefetch cache on the instance.
             instance._prefetched_objects_cache = {}
         return Response(serializer.data, status=status.HTTP_201_CREATED)
+
+    def destroy(self, request, *args, **kwargs):
+        instance = self.get_object()
+        # Remove -1 post
+        instance.profile.posts_count -= 1
+        instance.profile.save()
+
+        self.perform_destroy(instance)
+        return Response(status=status.HTTP_204_NO_CONTENT)
 
 
 class ProfilePost(APIView):
