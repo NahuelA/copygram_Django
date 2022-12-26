@@ -80,6 +80,10 @@ class PostsSerializer(serializers.ModelSerializer):
 
         else:
             self.instance = self.create(validated_data)
+            # Add +1 post
+            self.instance.profile.posts_count += 1
+            self.instance.profile.save()
+
             assert (
                 self.instance is not None
             ), "`create()` did not return an object instance."
