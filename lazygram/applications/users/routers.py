@@ -76,7 +76,7 @@ urlpatterns += [
     ),
     # Search profile
     path(
-        route="profiles/<str:search_profiles>",
+        route="profiles/search/<str:search_profiles>",
         view=ProfilesSearchView.as_view(),
         name="search_profile",
     ),
