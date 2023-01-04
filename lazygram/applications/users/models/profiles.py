@@ -8,9 +8,7 @@ from django.contrib.auth.models import User
 
 def user_directory_path(instance, filename):
     # file will be uploaded to MEDIA_ROOT/profile_picture_<username>/<filename>
-    return "profile_picture_{0}/{1}".format(
-        instance.profile_from.user.username, filename
-    )
+    return "profile_picture_{0}/{1}".format(instance.user.username, filename)
 
 
 class ProfileManager(models.Manager):
