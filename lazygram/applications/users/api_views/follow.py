@@ -88,19 +88,18 @@ class FollowingView(ModelViewSet):
 
 
 class IsFollowedView(APIView):
-    """If a profile are followed, return false."""
+    """If a profile is followed, return false."""
 
     permission_classes = (IsAuthenticated,)
-    update_status = status.HTTP_200_OK
 
     def get(self, request, *args, **kwargs):
         myfollowing = FollowingModel.objects.get(
             profile__user__username=kwargs.get("profile")
         )
+        profile = Profile.manager_object.get(
+            user__username=request.GET.get("myprofile")
+        )
 
-        if myfollowing != None:
-            for isfollowed in myfollowing.following.all():
-                isfollowed_ = str(isfollowed)  # Set string.
-                if isfollowed_ == request.GET.get("profile_followed"):
-                    return Response(True, status=self.update_status)
-        return Response(False, status=self.update_status)
+        if myfollowing != None and profile in myfollowing.following.all():
+            return Response(True, status=status.HTTP_200_OK)
+        return Response(False, status=status.HTTP_200_OK)
