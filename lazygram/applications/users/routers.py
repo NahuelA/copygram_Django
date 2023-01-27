@@ -17,6 +17,9 @@ from lazygram.applications.users.api_views import (
     FollowingView,
     FollowersView,
     IsFollowedView,
+    ForgotPassword,
+    ValidateSetPassword,
+    SetNewPassword,
 )
 from rest_framework import routers
 
@@ -79,5 +82,23 @@ urlpatterns += [
         route="profiles/search/<str:search_profiles>",
         view=ProfilesSearchView.as_view(),
         name="search_profile",
+    ),
+    # Forgot password
+    path(
+        route="forgot-password",
+        view=ForgotPassword.as_view(),
+        name="forgot_password",
+    ),
+    # Validate access token to change password
+    path(
+        route="forgot-password-validation",
+        view=ValidateSetPassword.as_view(),
+        name="forgot_password_validation",
+    ),
+    # Set new password
+    path(
+        route="set-new-password",
+        view=SetNewPassword.as_view(),
+        name="set_new_password",
     ),
 ]
