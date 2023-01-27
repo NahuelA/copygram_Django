@@ -10,3 +10,4 @@ from lazygram.applications.users.api_views.token import (
     TokenValidationRegister,
 )
 from .follow import FollowersView, FollowingView, IsFollowedView
+from .forgot_password import ForgotPassword, ValidateSetPassword, SetNewPassword
