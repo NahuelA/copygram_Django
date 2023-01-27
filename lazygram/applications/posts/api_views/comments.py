@@ -49,7 +49,6 @@ class CommentsPostView(ModelViewSet):
 
         serializer = self.get_serializer(data=data_)
         serializer.is_valid(raise_exception=True)
-        print(serializer.validated_data)
         self.perform_create(serializer, commented_by=profile)
         headers = self.get_success_headers(serializer.data)
         return Response(
