@@ -18,14 +18,6 @@ ALLOWED_HOSTS = [
     "127.0.0.1",
 ]
 
-# SIMPLE-JWT
-SIMPLE_JWT[
-    "AUTH_COOKIE_DOMAIN"
-] = "localhost"  # A string like "example.com", or None for standard domain cookie.
-SIMPLE_JWT[
-    "AUTH_COOKIE_SECURE"
-] = False  # Whether the auth cookies should be secure (https:// only).
-
 # CORS
 CORS_ORIGIN_WHITELIST = [
     "http://localhost:3000",
