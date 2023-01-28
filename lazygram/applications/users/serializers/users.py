@@ -3,13 +3,13 @@
 # Rest-framework
 from .__modules__ import *
 from rest_framework.validators import UniqueValidator
-from rest_framework_simplejwt.tokens import RefreshToken
 
 # Django
-from django.template.loader import render_to_string
 from django.core.validators import EmailValidator
-from django.core.mail import EmailMultiAlternatives
 from django.contrib.auth.models import User
+
+# Celery tasks
+from lazygram.taskapp.tasks import send_confirmation_email
 
 
 class UserSerializer(serializers.ModelSerializer):
@@ -83,27 +83,6 @@ class UserSerializer(serializers.ModelSerializer):
             assert (
                 self.instance is not None
             ), "`create()` did not return an object instance."
-            self.send_confirmation_email(self.instance)
+            send_confirmation_email.delay(user_id=self.instance.id)
 
         return self.instance
-
-    def send_confirmation_email(self, user):
-        """Send email to confirmation account."""
-        verification_token = self.verification_token(user)
-        subject = f"Welcome @{user}, please verify your account then you will be redirected to your Lazygram profile."
-        from_email = "Lazygram <noreply@lazygram.com>"
-        html_content = render_to_string(
-            "emails/users/account_verification.html",
-            {"user": user, "token": verification_token},
-        )
-        msg = EmailMultiAlternatives(subject, html_content, from_email, [user.email])
-        msg.attach_alternative(html_content, "text/html")
-        msg.send()
-
-    def verification_token(self, user):
-        """Verify account with JWT."""
-
-        refresh = RefreshToken.for_user(user)
-        tokens = {"refresh": str(refresh), "username": user.username}
-
-        return tokens
