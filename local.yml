@@ -39,14 +39,6 @@ services:
     stdin_open: true
     tty: true
 
-  nodejs:
-    build:
-      context: .
-      dockerfile: ./compose/local/node/Dockerfile
-    image: lazygram_local_node
-    volumes:
-      - .:/app
-
   celeryworker:
     <<: *django
     image: lazygram_local_celeryworker
