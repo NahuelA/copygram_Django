@@ -12,6 +12,5 @@
         }
     ],
     "framework": "django",
-    "packageManager": "pip@3.0.0",
     "installCommand": "pip install -v requirements/production.txt"
 }
