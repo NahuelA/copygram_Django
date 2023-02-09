@@ -1,10 +1,15 @@
 """ Create posts view. """
 
-# Modules
-from .__modules__ import *
+from rest_framework.viewsets import ModelViewSet
+from rest_framework.response import Response
+from rest_framework import status
+from rest_framework.views import APIView
+from rest_framework.permissions import IsAuthenticated
+
 
 # Models
 from lazygram.applications.posts.models import Posts
+from lazygram.applications.users.models import FollowingModel
 
 # Settings
 from config.settings.base import REST_FRAMEWORK
@@ -15,11 +20,13 @@ from lazygram.applications.users.models import Profile
 
 
 class PostsView(ModelViewSet):
-    """Posts view.
-    Return posts submited for the logged in users.
+    """
+    A viewset that provides default 'list()', 'create()', 'update()'
+    and 'destroy()' actions for the 'Posts' model.
     """
 
     queryset = Posts.objects.all()
+    followed_queryset = FollowingModel.objects.all()
     serializer_class = PostsSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -30,7 +37,14 @@ class PostsView(ModelViewSet):
         serializer.save()
 
     def list(self, request, *args, **kwargs):
-        queryset = self.filter_queryset(self.get_queryset())
+        """
+        List posts only from followed profiles.
+        """
+
+        profile = Profile.manager_object.get(user=request.user)
+        followed = self.followed_queryset.filter(profile=profile)
+        queryset = self.queryset.filter(profile_id__in=followed[0].following.all())
+
         page = self.paginate_queryset(queryset)
 
         if page is not None:
@@ -48,7 +62,9 @@ class PostsView(ModelViewSet):
 
         # Getting profile
         profile = Profile.manager_object.get(user__username=request.user)
-        self.perform_create(serializer, profile=profile)
+        self.perform_create(
+            serializer, profile=profile
+        )  # Send profile as a kwarg and save post
 
         # Headers
         headers = self.get_success_headers(serializer.data)
@@ -57,7 +73,7 @@ class PostsView(ModelViewSet):
         )
 
     def update(self, request, *args, **kwargs):
-        """Update posts"""
+
         partial = kwargs.pop("partial", True)
         instance = self.get_object()
 
@@ -77,6 +93,7 @@ class PostsView(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
+
         instance = self.get_object()
         # Remove -1 post
         instance.profile.posts_count -= 1
@@ -87,7 +104,9 @@ class PostsView(ModelViewSet):
 
 
 class ProfilePost(APIView):
-    """List all profile posts of a user."""
+    """
+    List all profile posts of a user.
+    """
 
     queryset = Posts.objects.all()
     serializer_class = PostsSerializer
