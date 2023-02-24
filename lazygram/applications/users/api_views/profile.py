@@ -17,7 +17,7 @@ class ProfileView(ModelViewSet):
     queryset = Profile.manager_object.all()
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
-    http_method_names = ["get", "put", "patch", "delete", "head", "options", "trace"]
+    http_method_names = ["get", "put", "patch", "delete", "head", "options"]
     lookup_field = "user__username"
 
     def get_object(self):
@@ -85,6 +85,7 @@ class ProfilesSearchView(ListAPIView):
     """Find profiles to starts with any registered username."""
 
     queryset = Profile.manager_object.all()
+    http_method_names = ["get", "head", "options"]
     serializer_class = ProfileSerializer
     permission_classes = (IsAuthenticated,)
 

@@ -22,7 +22,7 @@ class FollowersView(ModelViewSet):
     permission_classes = (IsAuthenticated,)
     update_status = status.HTTP_201_CREATED
     lookup_field = "profile__user__username"
-    http_method_names = ["get", "put", "patch", "delete", "head", "options", "trace"]
+    http_method_names = ["get", "put", "patch", "delete", "head", "options"]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", True)
@@ -59,7 +59,7 @@ class FollowingView(ModelViewSet):
     permission_classes = (IsAuthenticated,)
     update_status = status.HTTP_201_CREATED
     lookup_field = "profile__user__username"
-    http_method_names = ["get", "put", "patch", "delete", "head", "options", "trace"]
+    http_method_names = ["get", "put", "patch", "delete", "head", "options"]
 
     def update(self, request, *args, **kwargs):
         partial = kwargs.pop("partial", True)
@@ -91,6 +91,7 @@ class IsFollowedView(APIView):
     """If a profile is followed, return false."""
 
     permission_classes = (IsAuthenticated,)
+    http_method_names = ["get", "head", "options"]
 
     def get(self, request, *args, **kwargs):
         myfollowing = FollowingModel.objects.get(

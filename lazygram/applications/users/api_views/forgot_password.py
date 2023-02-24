@@ -20,7 +20,7 @@ class ForgotPassword(APIView):
     Send access token to allow change the password."""
 
     serializer_class = ForgotPasswordSerializer
-    http_method_names = ["get", "post", "head", "options", "trace"]
+    http_method_names = ["get", "post", "head", "options"]
 
     def post(self, request):
         serializer = self.serializer_class(data=request.data)
@@ -32,7 +32,7 @@ class ValidateSetPassword(APIView):
     """Authentication for set a new password."""
 
     user_model = User
-    http_method_names = ["get", "post", "head", "options", "trace"]
+    http_method_names = ["get", "post", "head", "options"]
 
     def authenticate(self, raw_token):
         if raw_token is None:
@@ -53,7 +53,9 @@ class ValidateSetPassword(APIView):
 
         if access_token is not None:
             user = self.authenticate(access_token)
-            return Response(str(user[1]), status=status.HTTP_200_OK)
+
+            data = {"access": str(user[1]), "username": str(user[0])}
+            return Response(data, status=status.HTTP_200_OK)
 
 
 class SetNewPassword(APIView):
@@ -61,7 +63,7 @@ class SetNewPassword(APIView):
 
     permission_classes = (IsAuthenticated,)
     serializer_class = SetNewPasswordSerializer
-    http_method_names = ["get", "post", "head", "options", "trace"]
+    http_method_names = ["get", "post", "head", "options"]
 
     def post(self, request):
 

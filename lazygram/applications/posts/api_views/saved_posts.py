@@ -19,9 +19,9 @@ class SavedPostsView(ModelViewSet):
         "get",
         "post",
         "put",
+        "patch",
         "head",
         "options",
-        "trace",
     ]
     lookup_field = "profile__user__username"
     permission_classes = (IsAuthenticated,)

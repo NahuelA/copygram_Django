@@ -22,6 +22,7 @@ class UserView(ModelViewSet):
 
     model = User
     queryset = model.objects.all()
+    http_method_names = ["get", "put", "patch", "delete" "head", "options"]
     serializer_class = UserSerializer
     lookup_field = "username"
     update_status = status.HTTP_201_CREATED

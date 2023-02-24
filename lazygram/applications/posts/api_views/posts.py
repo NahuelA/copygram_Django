@@ -27,6 +27,7 @@ class PostsView(ModelViewSet):
 
     queryset = Posts.objects.all()
     followed_queryset = FollowingModel.objects.all()
+    http_method_names = ["get", "post", "put", "patch", "delete", "head", "options"]
     serializer_class = PostsSerializer
     permission_classes = (IsAuthenticated,)
 
@@ -93,6 +94,10 @@ class PostsView(ModelViewSet):
         return Response(serializer.data, status=status.HTTP_201_CREATED)
 
     def destroy(self, request, *args, **kwargs):
+        """
+        Remove a post instance and discount -1 from `posts_count` field from profile
+        instance asociated with the instance deleted.
+        """
 
         instance = self.get_object()
         # Remove -1 post
@@ -111,6 +116,7 @@ class ProfilePost(APIView):
     queryset = Posts.objects.all()
     serializer_class = PostsSerializer
     permission_classes = (IsAuthenticated,)
+    http_method_names = ["get", "post", "put", "patch", "head", "options"]
     pagination_class = REST_FRAMEWORK.get("DEFAULT_PAGINATION_CLASS")
     _paginator = None
 
