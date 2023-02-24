@@ -17,6 +17,7 @@ class CommentsPostView(ModelViewSet):
     model = Comments
     queryset = Comments.objects.all()
     serializer_class = CommentsSerializer
+    http_method_names = ["get", "post", "put", "patch", "head", "options"]
     permission_classes = (IsAuthenticated,)
 
     def perform_create(self, serializer, *args, **kwargs):
