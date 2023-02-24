@@ -5,7 +5,7 @@ simply, fast and functional social network to interconect with the world.
 
 ## Project status
 
-This project are in development, comming soon in production.
+In production: [www.lazygram.online](http://www.lazygram.online)
 
 ## How to use
 
@@ -28,12 +28,9 @@ SECRET_KEY="Your secret key"
 DJANGO_ADMIN_URL="Your admin page url"
 
 
-# Local
-DJANGO_DEBUG=False
-
-
 # Prod
-DJANGO_ALLOWED_HOSTS="lazygram.com"
+DJANGO_DEBUG=False
+DJANGO_ALLOWED_HOSTS=".example.online"
 CONN_MAX_AGE=60
 REDIS_URL="redis://127.0.0.1:6379/0"
 
@@ -57,7 +54,36 @@ MAILGUN_API_KEY="Your api key"
 MAILGUN_DOMAIN="<noreply@example.com>"
 ```
 
-**Build and up containers:**
+Before, into a .envs/ create a new folder called .production with two files calleds .django and .postgres
+and write:
+
+### Django file
+
+```bash
+# .django
+
+# Redis
+REDIS_URL=redis://redis:6379/1
+
+# Flower
+CELERY_FLOWER_USER="Your user"
+CELERY_FLOWER_PASSWORD="Your password"
+```
+
+### Postgres file
+
+```bash
+# .postgres
+
+# PostgreSQL
+POSTGRES_HOST=postgres
+POSTGRES_PORT=5432
+POSTGRES_DB=lazygram
+POSTGRES_USER="Your user"
+POSTGRES_PASSWORD="Your password"
+```
+
+### Build and up containers
 
 ``` bash
 docker-compose -f local.yml build | docker-compose -f local.yml up
@@ -142,9 +168,9 @@ For more information, visit the following documentation:
 - [Rest-framework](https://www.django-rest-framework.org/)
 - [CORS](https://pypi.org/project/django-cors-headers/)
 - [Rest-framework-simply-jwt](https://django-rest-framework-simplejwt.readthedocs.io/en/latest/settings.html)
-- [Redis](https://redis.io/docs/getting-started/) v4.0.0
-- [Django-redis](https://django-redis-cache.readthedocs.io/en/latest/) v5.1.0
-- [Anymail(Mailgun)](https://anymail.dev/en/stable/esps/mailgun/) v8.5
+- [Redis](https://redis.io/docs/getting-started/)
+- [Django-redis](https://django-redis-cache.readthedocs.io/en/latest/)
+- [Anymail(Mailgun)](https://anymail.dev/en/stable/esps/mailgun/)
 
 ## Features
 
