@@ -5,7 +5,8 @@ from .base import env
 
 # Base
 SECRET_KEY = env.str("SECRET_KEY")
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[".vercel.app"])
+
+ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[".lazygram.online"])
 
 # Databases
 DATABASES["default"] = env.db("DATABASE_URL")  # NOQA
@@ -25,8 +26,8 @@ CACHES = {
 }
 
 # Security
-SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
-SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
+# SECURE_PROXY_SSL_HEADER = ("HTTP_X_FORWARDED_PROTO", "https")
+# SECURE_SSL_REDIRECT = env.bool("DJANGO_SECURE_SSL_REDIRECT", default=True)
 SESSION_COOKIE_SECURE = True
 CSRF_COOKIE_SECURE = True
 SECURE_HSTS_SECONDS = 60
@@ -39,10 +40,11 @@ SECURE_CONTENT_TYPE_NOSNIFF = env.bool(
 )
 
 # Cookie domain
-SESSION_COOKIE_DOMAIN = "lazygram.com"
+SESSION_COOKIE_DOMAIN = "lazygram.online"
 
 # Static  files
 STATICFILES_STORAGE = "whitenoise.storage.CompressedManifestStaticFilesStorage"
+# STATIC_ROOT = "/var/www/lazygram.online/static"
 
 # Templates
 TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
