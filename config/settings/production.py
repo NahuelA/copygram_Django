@@ -6,7 +6,7 @@ from .base import env
 # Base
 SECRET_KEY = env.str("SECRET_KEY")
 
-ALLOWED_HOSTS = env.list("DJANGO_ALLOWED_HOSTS", default=[".lazygram.online"])
+ALLOWED_HOSTS = ["www.lazygram.online", "lazygram.online"]
 
 # Databases
 DATABASES["default"] = env.db("DATABASE_URL")  # NOQA
