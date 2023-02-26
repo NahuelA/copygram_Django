@@ -4,9 +4,9 @@ volumes:
   production_postgres_data: {}
   production_postgres_data_backups: {}
   production_lazygram_react: {}
+  production_lazygram_index: {}
   production_lazygram_django_staticfiles: {}
   production_lazygram_django_mediafiles: {}
-  production_caddy: {}
 
 
 services:
@@ -43,21 +43,6 @@ services:
     ports:
       - 5432:5432
 
-  # caddy:
-  #   build:
-  #     context: .
-  #     dockerfile: ./compose/production/caddy/Dockerfile
-  #   image: lazygram_production_caddy
-  #   depends_on:
-  #     - django
-  #   volumes:
-  #     - production_caddy:/root/.caddy
-  #   env_file:
-  #     - ./.envs/.production/.caddy
-  #   ports:
-  #     - "0.0.0.0:81:81"
-  #     - "0.0.0.0:444:444"
-
   redis:
     image: redis:7.0-alpine
     ports:
@@ -91,23 +76,48 @@ services:
       context: ../lazygram_react
       dockerfile: ../lazygram_react/Dockerfile
     volumes:
-      - production_lazygram_react:/lazygram_react/build
+      - production_lazygram_react:/lazygram_react//build
+      - production_lazygram_index:/lazygram_react/build/index
 
-  nginx:
-    build:
-      context: .
-      dockerfile: ./compose/production/nginx/Dockerfile
+  nginx-proxy:
+    image: jwilder/nginx-proxy
+    restart: always
     ports:
       - "80:80"
+      - "443:443"
+    volumes:
+      - /var/run/docker.sock:/tmp/docker.sock:ro
+      - /home/nahuela/Desktop/projects/lazygram_django/certs:/etc/nginx/certs:ro
+      - /etc/nginx/vhost.d
+      - /usr/share/nginx/html
+    labels:
+      - com.github.jrcs.letsencrypt_nginx_proxy_companion.nginx_proxy
+
+  letsencrypt:
+    image: jrcs/letsencrypt-nginx-proxy-companion
+    restart: always
+    volumes:
+      - /home/nahuela/Desktop/projects/lazygram_django/certs:/etc/nginx/certs:rw
+      - /var/run/docker.sock:/var/run/docker.sock:ro
+    volumes_from:
+      - nginx-proxy:rw
+
+  nginx:
+    image: nginx
+    restart: always
+    expose:
+      - "80"
     volumes:
       - ./config/settings/nginx/nginx.conf:/etc/nginx/conf.d/default.conf:ro
       - ./config/settings/nginx/nginx-setup.conf:/etc/nginx/nginx.conf
       - production_lazygram_react:/var/www/lazygram.online/static
       - production_lazygram_django_staticfiles:/var/www/lazygram.online/staticfiles
       - production_lazygram_django_mediafiles:/var/www/lazygram.online/media
-      - /etc/letsencrypt/live/lazygram.online/fullchain.pem
-      - /etc/letsencrypt/live/lazygram.online/privkey.pem
-      - /etc/letsencrypt/options-ssl-nginx.conf
+      - production_lazygram_index:/usr/share/nginx/html
+    environment:
+      - VIRTUAL_HOST=lazygram.online,wwwlazygram.online
+      - LETSENCRYPT_HOST=lazygram.online,wwwlazygram.online
+      - LETSENCRYPT_EMAIL=noreply@lazygram.online
     depends_on:
       - django_production
       - react
