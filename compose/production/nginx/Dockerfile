@@ -1,3 +1,0 @@
-FROM nginx
-
-WORKDIR /nginx
