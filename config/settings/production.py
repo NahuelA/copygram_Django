@@ -6,7 +6,7 @@ from .base import env
 # Base
 SECRET_KEY = env.str("SECRET_KEY")
 
-ALLOWED_HOSTS = ["www.lazygram.online", "lazygram.online"]
+ALLOWED_HOSTS = ["www.lazygram.online", "lazygram.online", "0.0.0.0"]
 
 # Databases
 DATABASES["default"] = env.db("DATABASE_URL")  # NOQA
@@ -59,7 +59,7 @@ TEMPLATES[0]["OPTIONS"]["loaders"] = [  # noqa F405
 
 # Email
 DEFAULT_FROM_EMAIL = env.str(
-    "DJANGO_DEFAULT_FROM_EMAIL", default="Lazygram <noreply@lazygram.com>"
+    "DJANGO_DEFAULT_FROM_EMAIL", default="Lazygram <noreply@lazygram.online>"
 )
 
 SERVER_EMAIL = env.str("DJANGO_SERVER_EMAIL", default=DEFAULT_FROM_EMAIL)
